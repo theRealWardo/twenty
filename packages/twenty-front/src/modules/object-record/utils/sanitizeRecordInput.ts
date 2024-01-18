@@ -1,5 +1,6 @@
 import { ObjectMetadataItem } from '@/object-metadata/types/ObjectMetadataItem';
 import { isFieldRelationValue } from '@/object-record/record-field/types/guards/isFieldRelationValue';
+import { sanitizeRecordLinks } from '@/object-record/utils/sanitizeLinkRecordInput';
 import { FieldMetadataType } from '~/generated/graphql';
 import { isDefined } from '~/utils/isDefined';
 
@@ -10,7 +11,7 @@ export const sanitizeRecordInput = ({
   objectMetadataItem: ObjectMetadataItem;
   recordInput: Record<string, unknown>;
 }) => {
-  return Object.fromEntries(
+  const filteredResultRecord = Object.fromEntries(
     Object.entries(recordInput)
       .map<[string, unknown] | undefined>(([fieldName, fieldValue]) => {
         const fieldMetadataItem = objectMetadataItem.fields.find(
@@ -37,4 +38,10 @@ export const sanitizeRecordInput = ({
       })
       .filter(isDefined),
   );
+  switch (Object.keys(filteredResultRecord)[0]) {
+    case 'domainName':
+      return sanitizeRecordLinks(filteredResultRecord);
+    default:
+      return filteredResultRecord;
+  }
 };
