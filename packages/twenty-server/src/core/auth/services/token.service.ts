@@ -26,6 +26,7 @@ import { EnvironmentService } from 'src/integrations/environment/environment.ser
 import { User } from 'src/core/user/user.entity';
 import { RefreshToken } from 'src/core/refresh-token/refresh-token.entity';
 import { Workspace } from 'src/core/workspace/workspace.entity';
+import { id } from 'date-fns/locale';
 
 @Injectable()
 export class TokenService {
@@ -170,6 +171,12 @@ export class TokenService {
     });
 
     return { token };
+  }
+
+  isTokenPresent(request: Request): boolean {
+    const token = ExtractJwt.fromAuthHeaderAsBearerToken()(request);
+
+    return !!token;
   }
 
   async validateToken(request: Request): Promise<Workspace> {
