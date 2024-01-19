@@ -45,27 +45,13 @@ export class ExecuteQuickActionOnOneResolverFactory
     args: DeleteOneResolverArgs,
     options: WorkspaceQueryRunnerOptions,
   ): Promise<Record | undefined> {
-    switch (options.objectMetadataItem.nameSingular) {
-      case 'company': {
-        await this.quickActionsService.executeQuickActionOnCompany(
-          args.id,
-          options.workspaceId,
-          options.objectMetadataItem,
-        );
-        break;
-      }
-      case 'person': {
-        await this.quickActionsService.createCompanyFromPerson(
-          args.id,
-          options.workspaceId,
-          options.objectMetadataCollection,
-        );
-        break;
-      }
-      default:
-        // TODO: different quick actions per object on frontend
-        break;
-    }
+    await this.quickActionsService.handleRequest(
+      options.objectMetadataItem.nameSingular,
+      args.id,
+      options.workspaceId,
+      options.objectMetadataItem,
+      options.objectMetadataCollection,
+    );
 
     return this.workspaceQueryRunnerService.findOne(
       { filter: { id: { eq: args.id } } } as FindOneResolverArgs,

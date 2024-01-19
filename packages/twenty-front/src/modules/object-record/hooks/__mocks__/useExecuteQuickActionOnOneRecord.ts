@@ -3,8 +3,14 @@ import { gql } from '@apollo/client';
 export { responseData } from './useUpdateOneRecord';
 
 export const query = gql`
-  mutation ExecuteQuickActionOnOnePerson($idToExecuteQuickActionOn: ID!) {
-    executeQuickActionOnPerson(id: $idToExecuteQuickActionOn) {
+  mutation ExecuteQuickActionOnOnePerson(
+    $idToExecuteQuickActionOn: ID!
+    $actionName: String!
+  ) {
+    executeQuickActionOnPerson(
+      id: $idToExecuteQuickActionOn
+      actionNAme: $actionName
+    ) {
       id
       opportunities {
         edges {

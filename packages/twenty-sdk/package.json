@@ -1,0 +1,9 @@
+{
+  "name": "twenty-sdk",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "nx": "NX_DEFAULT_PROJECT=twenty-docs node ../../node_modules/nx/bin/nx.js",
+    "test": "jest"
+  }
+}

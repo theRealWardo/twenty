@@ -23,11 +23,12 @@ export const useExecuteQuickActionOnOneRecord = <T>({
   const apolloClient = useApolloClient();
 
   const executeQuickActionOnOneRecord = useCallback(
-    async (idToExecuteQuickActionOn: string) => {
+    async (idToExecuteQuickActionOn: string, actionName: string) => {
       const executeQuickActionOnRecord = await apolloClient.mutate({
         mutation: executeQuickActionOnOneRecordMutation,
         variables: {
           idToExecuteQuickActionOn,
+          actionName,
         },
         refetchQueries: [getOperationName(findManyRecordsQuery) ?? ''],
       });

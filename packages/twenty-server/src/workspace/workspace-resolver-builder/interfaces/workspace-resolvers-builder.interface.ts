@@ -53,6 +53,7 @@ export interface DeleteOneResolverArgs {
 
 export interface ExecuteQuickActionOnOneResolverArgs {
   id: string;
+  actionName: string;
 }
 
 export interface DeleteManyResolverArgs<Filter = any> {

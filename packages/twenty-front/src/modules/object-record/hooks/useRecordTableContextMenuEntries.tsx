@@ -100,16 +100,17 @@ export const useRecordTableContextMenuEntries = (
 
   const handleExecuteQuickActionOnClick = useRecoilCallback(
     ({ snapshot }) =>
-      async () => {
+      async (actionName: string) => {
         const rowIdsToExecuteQuickActionOn = getSnapshotValue(
           snapshot,
           selectedRowIdsSelector,
         );
 
         resetTableRowSelection();
+
         await Promise.all(
           rowIdsToExecuteQuickActionOn.map(async (rowId) => {
-            await executeQuickActionOnOneRecord(rowId);
+            await executeQuickActionOnOneRecord(rowId, actionName);
           }),
         );
       },
@@ -197,13 +198,16 @@ export const useRecordTableContextMenuEntries = (
                 Icon: IconClick,
                 subActions: [
                   {
-                    label: 'Enrich',
+                    label: 'Enrich company',
                     Icon: IconPuzzle,
-                    onClick: () => handleExecuteQuickActionOnClick(),
+                    onClick: () =>
+                      handleExecuteQuickActionOnClick('enrichCompany'),
                   },
                   {
-                    label: 'Send to mailjet',
+                    label: 'Person email -> company',
                     Icon: IconMail,
+                    onClick: () =>
+                      handleExecuteQuickActionOnClick('createCompanyFromEmail'),
                   },
                 ],
               },

@@ -1,179 +1,55 @@
 import { Injectable } from '@nestjs/common';
 
-import { v4 as uuidv4 } from 'uuid';
-
-import { Record as IRecord } from 'src/workspace/workspace-query-builder/interfaces/record.interface';
 import { ObjectMetadataInterface } from 'src/metadata/field-metadata/interfaces/object-metadata.interface';
 
-import { isWorkEmail } from 'src/utils/is-work-email';
-import { stringifyWithoutKeyQuote } from 'src/workspace/workspace-query-builder/utils/stringify-without-key-quote.util';
-import { WorkspaceQueryRunnerService } from 'src/workspace/workspace-query-runner/workspace-query-runner.service';
-import { IntelligenceService } from 'src/core/quick-actions/intelligence.service';
-import { capitalize } from 'src/utils/capitalize';
+import { QuickAction } from 'src/core/quick-actions/quick-action.entity';
 
 @Injectable()
 export class QuickActionsService {
-  constructor(
-    private readonly workspaceQueryRunnunerService: WorkspaceQueryRunnerService,
-    private readonly intelligenceService: IntelligenceService,
-  ) {}
+  constructor() {}
 
-  async createCompanyFromPerson(
-    id: string,
-    workspaceId: string,
-    objectMetadataItemCollection: ObjectMetadataInterface[],
-  ) {
-    const personObjectMetadata = objectMetadataItemCollection.find(
-      (item) => item.nameSingular === 'person',
-    );
+  async getQuickActions() {
+    const actions: QuickAction[] = [
+      {
+        label: 'Enrich w/ Twenty ',
+        objects: ['company'],
+        icon: 'IconClick',
+        scriptName: 'enrichCompany',
+      },
+      {
+        label: 'Email -> Company',
+        objects: ['person'],
+        icon: 'IconClick',
+        scriptName: 'createCompanyFromEmail',
+      },
+    ];
 
-    if (!personObjectMetadata) {
-      return;
-    }
-
-    const personRequest =
-      await this.workspaceQueryRunnunerService.executeAndParse<IRecord>(
-        `query {
-        personCollection(filter: {id: {eq: "${id}"}}) {
-              edges {
-                node {
-                  id
-                  email
-                  companyId
-                }
-              }
-            }
-          }
-        `,
-        personObjectMetadata,
-        '',
-        workspaceId,
-      );
-    const person = personRequest.edges?.[0]?.node;
-
-    if (!person) {
-      return;
-    }
-
-    if (!person.companyId && person.email && isWorkEmail(person.email)) {
-      const companyDomainName = person.email.split('@')?.[1].toLowerCase();
-      const companyName = capitalize(companyDomainName.split('.')[0]);
-      let relatedCompanyId = uuidv4();
-
-      const companyObjectMetadata = objectMetadataItemCollection.find(
-        (item) => item.nameSingular === 'company',
-      );
-
-      if (!companyObjectMetadata) {
-        return;
-      }
-
-      const existingCompany =
-        await this.workspaceQueryRunnunerService.executeAndParse<IRecord>(
-          `query {companyCollection(filter: {domainName: {eq: "${companyDomainName}"}}) {
-                edges {
-                  node {
-                    id
-                  }
-                }
-              }
-            }
-          `,
-          companyObjectMetadata,
-          '',
-          workspaceId,
-        );
-
-      if (existingCompany.edges?.length) {
-        relatedCompanyId = existingCompany.edges[0].node.id;
-      }
-
-      await this.workspaceQueryRunnunerService.execute(
-        `mutation {
-          insertIntocompanyCollection(objects: ${stringifyWithoutKeyQuote([
-            {
-              id: relatedCompanyId,
-              name: companyName,
-              domainName: companyDomainName,
-              createdAt: new Date().toISOString(),
-              updatedAt: new Date().toISOString(),
-            },
-          ])}) {
-            affectedCount
-            records {
-              id
-            }
-          }
-        }
-      `,
-        workspaceId,
-      );
-
-      await this.workspaceQueryRunnunerService.execute(
-        `mutation {
-          updatepersonCollection(set: ${stringifyWithoutKeyQuote({
-            companyId: relatedCompanyId,
-          })}, filter: { id: { eq: "${person.id}" } }) {
-            affectedCount
-            records {
-              id
-            }
-          }
-        }
-      `,
-        workspaceId,
-      );
-    }
+    return actions;
   }
 
-  async executeQuickActionOnCompany(
+  async handleRequest(
+    nameSingular: string,
     id: string,
     workspaceId: string,
+    actionName: string,
     objectMetadataItem: ObjectMetadataInterface,
+    objectMetadataItemCollection: ObjectMetadataInterface[],
   ) {
-    const companyQuery = `query {
-        companyCollection(filter: {id: {eq: "${id}"}}) {
-          edges {
-            node {
-              id
-              domainName
-              createdAt
-              linkedinLinkUrl
-            }
-          }
-        }
-     }
-    `;
+    const actions = await this.getQuickActions();
 
-    const companyRequest =
-      await this.workspaceQueryRunnunerService.executeAndParse<IRecord>(
-        companyQuery,
-        objectMetadataItem,
-        '',
-        workspaceId,
-      );
-    const company = companyRequest.edges?.[0]?.node;
+    const action = actions.find(
+      (item) =>
+        item.objects.includes[nameSingular] && item.scriptName === actionName,
+    );
 
-    if (!company) {
+    if (!action) {
       return;
     }
 
-    const enrichedData = await this.intelligenceService.enrichCompany(
-      company.domainName,
-    );
-
-    await this.workspaceQueryRunnunerService.execute(
-      `mutation {
-        updatecompanyCollection(set: ${stringifyWithoutKeyQuote(
-          enrichedData,
-        )}, filter: { id: { eq: "${id}" } }) {
-            affectedCount
-            records {
-              id
-            }
-          }
-      }`,
+    await this[action.scriptName](
+      id,
       workspaceId,
+      objectMetadataItemCollection,
     );
   }
 }

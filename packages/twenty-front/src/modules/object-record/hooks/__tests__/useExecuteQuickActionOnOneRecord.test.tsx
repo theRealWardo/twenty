@@ -11,6 +11,7 @@ import {
 import { useExecuteQuickActionOnOneRecord } from '@/object-record/hooks/useExecuteQuickActionOnOneRecord';
 
 const idToExecuteQuickActionOn = 'a7286b9a-c039-4a89-9567-2dfa7953cda9';
+const actionName = 'enrichCompany';
 
 const mocks = [
   {
@@ -23,6 +24,7 @@ const mocks = [
         executeQuickActionOnPerson: {
           ...responseData,
           id: idToExecuteQuickActionOn,
+          actionName: actionName,
         },
       },
     })),
@@ -52,6 +54,7 @@ describe('useExecuteQuickActionOnOneRecord', () => {
     await act(async () => {
       const res = await result.current.executeQuickActionOnOneRecord(
         idToExecuteQuickActionOn,
+        actionName,
       );
 
       expect(res).toHaveProperty('id', idToExecuteQuickActionOn);
