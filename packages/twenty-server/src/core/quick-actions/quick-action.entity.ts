@@ -8,9 +8,9 @@ export class QuickAction {
   @Field(() => String)
   icon: string;
 
-  @Field(() => [String])
-  objects: string[];
+  @Field(() => String)
+  objectNameSingular: string;
 
   @Field(() => String)
-  scriptName: string;
+  name: string;
 }

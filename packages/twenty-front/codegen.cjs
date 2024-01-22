@@ -7,7 +7,7 @@ module.exports = {
     './src/modules/**/*.ts',
     '!./src/**/*.test.tsx',
     '!./src/**/__mocks__/*.ts',
-    '!./src/modules/users/graphql/queries/getCurrentUserAndViews.ts'
+    '!./src/modules/users/graphql/queries/getCurrentUserQucikActionsAndViews.ts'
   ],
   overwrite: true,
   generates: {

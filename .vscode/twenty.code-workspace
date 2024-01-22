@@ -33,6 +33,10 @@
       "path": "../packages/twenty-zapier"
     },
     {
+      "name": "packages/twenty-sdk",
+      "path": "../packages/twenty-sdk"
+    },
+    {
       "name": "tools/eslint-rules",
       "path": "../tools/eslint-rules"
     },

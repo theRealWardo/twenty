@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { gql, useApolloClient } from '@apollo/client';
 import { isNonEmptyString } from '@sniptt/guards';
 import { useRecoilCallback, useRecoilValue, useSetRecoilState } from 'recoil';
 
@@ -15,12 +16,12 @@ import {
   IconClick,
   IconHeart,
   IconHeartOff,
-  IconMail,
   IconNotes,
-  IconPuzzle,
   IconTrash,
 } from '@/ui/display/icon';
+import { useIcons } from '@/ui/display/icon/hooks/useIcons';
 import { actionBarEntriesState } from '@/ui/navigation/action-bar/states/actionBarEntriesState';
+import { ActionBarEntry } from '@/ui/navigation/action-bar/types/ActionBarEntry';
 import { contextMenuEntriesState } from '@/ui/navigation/context-menu/states/contextMenuEntriesState';
 import { ContextMenuEntry } from '@/ui/navigation/context-menu/types/ContextMenuEntry';
 import { getSnapshotValue } from '@/ui/utilities/recoil-scope/utils/getSnapshotValue';
@@ -35,6 +36,8 @@ type useRecordTableContextMenuEntriesProps = {
 export const useRecordTableContextMenuEntries = (
   props: useRecordTableContextMenuEntriesProps,
 ) => {
+  const { getIcon } = useIcons();
+
   const setContextMenuEntries = useSetRecoilState(contextMenuEntriesState);
   const setActionBarEntriesState = useSetRecoilState(actionBarEntriesState);
 
@@ -129,6 +132,45 @@ export const useRecordTableContextMenuEntries = (
     props.recordTableId,
   );
 
+  const apolloClient = useApolloClient();
+
+  const cachedRootQuery = apolloClient.readFragment({
+    id: 'ROOT_QUERY',
+    fragment: gql`
+      fragment RootQuery on Query {
+        quickActions {
+          name
+          label
+          icon
+          objectNameSingular
+        }
+      }
+    `,
+  });
+
+  const quickActions: ActionBarEntry[] = [
+    {
+      label: 'Actions',
+      Icon: IconClick,
+      subActions: cachedRootQuery.quickActions
+        .map(
+          (quickAction: {
+            objectNameSingular: string;
+            label: string;
+            icon: any;
+            name: string;
+          }) => ({
+            ...(quickAction.objectNameSingular === objectNameSingular && {
+              label: quickAction.label,
+              Icon: getIcon(quickAction.icon),
+              onClick: () => handleExecuteQuickActionOnClick(quickAction.name),
+            }),
+          }),
+        )
+        .filter((item: any) => item !== null),
+    },
+  ];
+
   return {
     setContextMenuEntries: useCallback(() => {
       const selectedRowId =
@@ -191,28 +233,7 @@ export const useRecordTableContextMenuEntries = (
             openCreateActivityDrawer('Note', objectNameSingular);
           },
         },
-        ...(dataExecuteQuickActionOnmentEnabled
-          ? [
-              {
-                label: 'Actions',
-                Icon: IconClick,
-                subActions: [
-                  {
-                    label: 'Enrich company',
-                    Icon: IconPuzzle,
-                    onClick: () =>
-                      handleExecuteQuickActionOnClick('enrichCompany'),
-                  },
-                  {
-                    label: 'Person email -> company',
-                    Icon: IconMail,
-                    onClick: () =>
-                      handleExecuteQuickActionOnClick('createCompanyFromEmail'),
-                  },
-                ],
-              },
-            ]
-          : []),
+        ...(dataExecuteQuickActionOnmentEnabled ? quickActions : []),
         {
           label: 'Delete',
           Icon: IconTrash,

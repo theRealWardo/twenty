@@ -4,7 +4,7 @@ import { within } from '@storybook/test';
 import { graphql, HttpResponse } from 'msw';
 
 import { AppPath } from '@/types/AppPath';
-import { GET_CURRENT_USER_AND_VIEWS } from '@/users/graphql/queries/getCurrentUserAndViews';
+import { GET_CURRENT_USER_QUICK_ACTIONS_AND_VIEWS } from '@/users/graphql/queries/getCurrentUserQuickActionsAndViews';
 import {
   PageDecorator,
   PageDecoratorArgs,
@@ -23,7 +23,7 @@ const meta: Meta<PageDecoratorArgs> = {
     msw: {
       handlers: [
         graphql.query(
-          getOperationName(GET_CURRENT_USER_AND_VIEWS) ?? '',
+          getOperationName(GET_CURRENT_USER_QUICK_ACTIONS_AND_VIEWS) ?? '',
           () => {
             return HttpResponse.json({
               data: {

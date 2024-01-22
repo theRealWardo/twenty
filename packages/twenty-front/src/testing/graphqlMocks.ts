@@ -4,7 +4,7 @@ import { graphql, HttpResponse } from 'msw';
 import { CREATE_EVENT } from '@/analytics/graphql/queries/createEvent';
 import { GET_CLIENT_CONFIG } from '@/client-config/graphql/queries/getClientConfig';
 import { FIND_MANY_OBJECT_METADATA_ITEMS } from '@/object-metadata/graphql/queries';
-import { GET_CURRENT_USER_AND_VIEWS } from '@/users/graphql/queries/getCurrentUserAndViews';
+import { GET_CURRENT_USER_QUICK_ACTIONS_AND_VIEWS } from '@/users/graphql/queries/getCurrentUserQuickActionsAndViews';
 import { REACT_APP_SERVER_BASE_URL } from '~/config';
 import { mockedActivities } from '~/testing/mock-data/activities';
 import { mockedCompaniesData } from '~/testing/mock-data/companies';
@@ -22,25 +22,28 @@ const metadataGraphql = graphql.link(`${REACT_APP_SERVER_BASE_URL}/metadata`);
 
 export const graphqlMocks = {
   handlers: [
-    graphql.query(getOperationName(GET_CURRENT_USER_AND_VIEWS) ?? '', () => {
-      return HttpResponse.json({
-        data: {
-          currentUser: mockedUsersData[0],
-          views: {
-            edges: mockedViewsData.map((view) => ({
-              node: view,
-              cursor: null,
-            })),
-            pageInfo: {
-              hasNextPage: false,
-              hasPreviousPage: false,
-              startCursor: null,
-              endCursor: null,
+    graphql.query(
+      getOperationName(GET_CURRENT_USER_QUICK_ACTIONS_AND_VIEWS) ?? '',
+      () => {
+        return HttpResponse.json({
+          data: {
+            currentUser: mockedUsersData[0],
+            views: {
+              edges: mockedViewsData.map((view) => ({
+                node: view,
+                cursor: null,
+              })),
+              pageInfo: {
+                hasNextPage: false,
+                hasPreviousPage: false,
+                startCursor: null,
+                endCursor: null,
+              },
             },
           },
-        },
-      });
-    }),
+        });
+      },
+    ),
     graphql.mutation(getOperationName(CREATE_EVENT) ?? '', () => {
       return HttpResponse.json({
         data: {

@@ -5,14 +5,12 @@ import { Request } from 'express';
 
 import { EnvironmentService } from 'src/integrations/environment/environment.service';
 import { ApiRestQueryBuilderFactory } from 'src/core/api-rest/api-rest-query-builder/api-rest-query-builder.factory';
-import { TokenService } from 'src/core/auth/services/token.service';
 import { ApiRestResponse } from 'src/core/api-rest/types/api-rest-response.type';
 import { ApiRestQuery } from 'src/core/api-rest/types/api-rest-query.type';
 
 @Injectable()
 export class ApiRestService {
   constructor(
-    private readonly tokenService: TokenService,
     private readonly environmentService: EnvironmentService,
     private readonly apiRestQueryBuilderFactory: ApiRestQueryBuilderFactory,
     private readonly httpService: HttpService,

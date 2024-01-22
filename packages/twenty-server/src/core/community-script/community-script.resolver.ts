@@ -9,7 +9,7 @@ export class CommunityScriptResolver {
   constructor(private environmentService: EnvironmentService) {}
 
   @Query(() => CommunityScript)
-  async clientConfig(): Promise<CommunityScript> {
+  async communityScript(): Promise<CommunityScript> {
     const communityScript: CommunityScript = {
       success: true,
     };

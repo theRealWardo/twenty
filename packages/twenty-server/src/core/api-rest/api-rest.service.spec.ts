@@ -3,7 +3,6 @@ import { HttpService } from '@nestjs/axios';
 
 import { ApiRestService } from 'src/core/api-rest/api-rest.service';
 import { EnvironmentService } from 'src/integrations/environment/environment.service';
-import { TokenService } from 'src/core/auth/services/token.service';
 import { ApiRestQueryBuilderFactory } from 'src/core/api-rest/api-rest-query-builder/api-rest-query-builder.factory';
 
 describe('ApiRestService', () => {
@@ -19,10 +18,6 @@ describe('ApiRestService', () => {
         },
         {
           provide: EnvironmentService,
-          useValue: {},
-        },
-        {
-          provide: TokenService,
           useValue: {},
         },
         {

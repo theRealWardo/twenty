@@ -1,15 +1,13 @@
 {
     "compilerOptions": {
-        "target": "es6",
+        "target": "es2019",
         "module": "commonjs",
         "strict": true,
         "esModuleInterop": true,
         "outDir": "./dist",
         "baseUrl": "./src",
-        "paths": {
-            "*": ["node_modules/*", "src/*"]
-        }
+        "rootDir": "./src",
     },
     "include": ["src/**/*.ts"],
-    "exclude": ["node_modules"]
 }
+

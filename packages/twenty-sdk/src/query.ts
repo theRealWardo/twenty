@@ -1,10 +1,14 @@
+import { Client } from './client';
+
 export class Query {
   private operationType: string;
   private operationName: string;
   private fields: string[];
   private variables: { [key: string]: any };
+  private client: Client;
 
-  constructor() {
+  constructor(client: Client) {
+    this.client = client;
     this.operationType = '';
     this.operationName = '';
     this.fields = [];
@@ -35,7 +39,7 @@ export class Query {
     return this.variables;
   }
 
-  public build(): string {
+  private build(): string {
     if (!this.operationType || !this.operationName) {
       throw new Error(
         'Operation type and operation name are required to build the query',
@@ -70,10 +74,27 @@ export class Query {
       fields = ['id'];
     }
 
-    query += ' { ' + fields.join(' ') + ' }';
+    query += fields.join(' ');
 
     query += ' }';
 
     return query;
+  }
+
+  public async execute() {
+    const query = this.build();
+
+    try {
+      const response = await this.client.axiosInstance.post('', {
+        query,
+        variables: this.getVariables(),
+      });
+
+      return response.data;
+    } catch (error: any) {
+      // eslint-disable-next-line no-console
+      console.error('Error executing query', error.response);
+      throw error;
+    }
   }
 }

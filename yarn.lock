@@ -42379,6 +42379,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"twenty-sdk@npm:*, twenty-sdk@workspace:packages/twenty-sdk":
+  version: 0.0.0-use.local
+  resolution: "twenty-sdk@workspace:packages/twenty-sdk"
+  languageName: unknown
+  linkType: soft
+
 "twenty-server@workspace:packages/twenty-server":
   version: 0.0.0-use.local
   resolution: "twenty-server@workspace:packages/twenty-server"
@@ -42723,6 +42729,7 @@ __metadata:
     ts-node: "npm:10.9.1"
     tslib: "npm:^2.3.0"
     tsup: "npm:^8.0.1"
+    twenty-sdk: "npm:*"
     type-fest: "npm:^4.1.0"
     typeorm: "npm:^0.3.17"
     typescript: "npm:^5.3.3"

@@ -4,7 +4,6 @@ import {
   Resolver,
   FindOneResolverArgs,
   ExecuteQuickActionOnOneResolverArgs,
-  DeleteOneResolverArgs,
 } from 'src/workspace/workspace-resolver-builder/interfaces/workspace-resolvers-builder.interface';
 import { Record as IRecord } from 'src/workspace/workspace-query-builder/interfaces/record.interface';
 import { WorkspaceSchemaBuilderContext } from 'src/workspace/workspace-schema-builder/interfaces/workspace-schema-builder-context.interface';
@@ -42,13 +41,14 @@ export class ExecuteQuickActionOnOneResolverFactory
   }
 
   private async executeQuickActionOnOne<Record extends IRecord = IRecord>(
-    args: DeleteOneResolverArgs,
+    args: ExecuteQuickActionOnOneResolverArgs,
     options: WorkspaceQueryRunnerOptions,
   ): Promise<Record | undefined> {
     await this.quickActionsService.handleRequest(
       options.objectMetadataItem.nameSingular,
       args.id,
       options.workspaceId,
+      args.actionName,
       options.objectMetadataItem,
       options.objectMetadataCollection,
     );

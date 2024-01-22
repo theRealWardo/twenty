@@ -82,6 +82,10 @@ export const getResolverArgs = (
           type: FieldMetadataType.UUID,
           isNullable: false,
         },
+        actionName: {
+          type: FieldMetadataType.TEXT,
+          isNullable: false,
+        },
       };
     case 'updateMany':
       return {

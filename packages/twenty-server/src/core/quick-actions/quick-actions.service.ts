@@ -3,26 +3,21 @@ import { Injectable } from '@nestjs/common';
 import { ObjectMetadataInterface } from 'src/metadata/field-metadata/interfaces/object-metadata.interface';
 
 import { QuickAction } from 'src/core/quick-actions/quick-action.entity';
+import { CommunityScriptService } from 'src/core/community-script/community-script.service';
 
 @Injectable()
 export class QuickActionsService {
-  constructor() {}
+  constructor(private communityScriptService: CommunityScriptService) {}
 
-  async getQuickActions() {
+  async getQuickActions(workspaceId: string) {
     const actions: QuickAction[] = [
-      {
-        label: 'Enrich w/ Twenty ',
-        objects: ['company'],
-        icon: 'IconClick',
-        scriptName: 'enrichCompany',
-      },
-      {
-        label: 'Email -> Company',
-        objects: ['person'],
-        icon: 'IconClick',
-        scriptName: 'createCompanyFromEmail',
-      },
+      // Later we can add quick actions from other sources than just scripts
     ];
+
+    const scriptActions =
+      await this.communityScriptService.getQuickActions(workspaceId);
+
+    actions.push(...scriptActions);
 
     return actions;
   }
@@ -35,21 +30,25 @@ export class QuickActionsService {
     objectMetadataItem: ObjectMetadataInterface,
     objectMetadataItemCollection: ObjectMetadataInterface[],
   ) {
-    const actions = await this.getQuickActions();
+    const actions = await this.getQuickActions(workspaceId);
 
     const action = actions.find(
       (item) =>
-        item.objects.includes[nameSingular] && item.scriptName === actionName,
+        item.objectNameSingular === nameSingular && item.name === actionName,
     );
 
     if (!action) {
       return;
     }
 
-    await this[action.scriptName](
-      id,
-      workspaceId,
-      objectMetadataItemCollection,
-    );
+    if (objectMetadataItem) {
+      objectMetadataItemCollection = [objectMetadataItem];
+    }
+
+    objectMetadataItemCollection.map((item) => {
+      this.communityScriptService.runScript(workspaceId, action.name, {
+        id: item.id,
+      });
+    });
   }
 }

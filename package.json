@@ -256,6 +256,7 @@
     "ts-jest": "^29.1.1",
     "ts-loader": "^9.2.3",
     "ts-node": "10.9.1",
+    "twenty-sdk": "*",
     "typescript": "^5.3.3",
     "vite": "^5.0.0",
     "vite-plugin-checker": "^0.6.2",
@@ -285,6 +286,7 @@
       "packages/twenty-utils",
       "packages/twenty-zapier",
       "packages/twenty-website",
+      "packages/twenty-sdk",
       "tools/eslint-rules"
     ]
   }

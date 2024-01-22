@@ -1,6 +1,6 @@
 import axios, { Axios } from 'axios';
 
-import Query from './query';
+import { Query } from './query';
 
 export class Client {
   axiosInstance: Axios;
@@ -18,24 +18,7 @@ export class Client {
       },
     });
 
-    this.query = new Query();
+    this.query = new Query(this);
     this.baseUrl = baseUrl;
-  }
-
-  public async executeQuery() {
-    const query = this.query.build();
-
-    try {
-      const response = await this.axiosInstance.post('/', {
-        query,
-        variables: this.query.getVariables(),
-      });
-
-      return response.data;
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Error executing query', error);
-      throw error;
-    }
   }
 }
