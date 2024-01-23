@@ -2,6 +2,11 @@ import { useQuery } from '@apollo/client';
 import styled from '@emotion/styled';
 
 import { ThreadPreview } from '@/activities/emails/components/ThreadPreview';
+import { useThread } from '@/activities/emails/hooks/useThread';
+import {
+  MockedThread,
+  mockedThreads,
+} from '@/activities/emails/mocks/mockedThreads';
 import { getTimelineThreadsFromCompanyId } from '@/activities/emails/queries/getTimelineThreadsFromCompanyId';
 import { getTimelineThreadsFromPersonId } from '@/activities/emails/queries/getTimelineThreadsFromPersonId';
 import { ActivityTargetableObject } from '@/activities/types/ActivityTargetableEntity';
@@ -11,7 +16,7 @@ import {
 } from '@/ui/display/typography/components/H1Title';
 import { Card } from '@/ui/layout/card/components/Card';
 import { Section } from '@/ui/layout/section/components/Section';
-import { Scalars, TimelineThread } from '~/generated/graphql';
+import { TimelineThread } from '~/generated/graphql';
 
 const StyledContainer = styled.div`
   display: flex;
@@ -30,6 +35,8 @@ const StyledEmailCount = styled.span`
 `;
 
 export const Threads = ({ entity }: { entity: ActivityTargetableObject }) => {
+  const { openThread } = useThread();
+
   const threadQuery =
     entity.targetObjectNameSingular === 'person'
       ? getTimelineThreadsFromPersonId
@@ -48,6 +55,8 @@ export const Threads = ({ entity }: { entity: ActivityTargetableObject }) => {
     return;
   }
 
+  // To use once the id is returned by the query
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const fetchedTimelineThreads: TimelineThread[] =
     threads.data[
       entity.targetObjectNameSingular === 'Person'
@@ -55,24 +64,8 @@ export const Threads = ({ entity }: { entity: ActivityTargetableObject }) => {
         : 'getTimelineThreadsFromCompanyId'
     ];
 
-  const testTimelineThreads: TimelineThread[] = [
-    {
-      __typename: 'TimelineThread',
-      body: 'This is a test email' as Scalars['String'],
-      numberOfMessagesInThread: 5 as Scalars['Float'],
-      read: true as Scalars['Boolean'],
-      receivedAt: new Date().toISOString() as Scalars['DateTime'],
-      senderName: 'Thom Trp' as Scalars['String'],
-      senderPictureUrl:
-        'https://favicon.twenty.com/qonto.com' as Scalars['String'],
-      subject: 'Test email' as Scalars['String'],
-    },
-  ];
+  const timelineThreads = mockedThreads;
 
-  const timelineThreads =
-    fetchedTimelineThreads.length > 0
-      ? fetchedTimelineThreads
-      : testTimelineThreads;
   return (
     <StyledContainer>
       <Section>
@@ -89,11 +82,12 @@ export const Threads = ({ entity }: { entity: ActivityTargetableObject }) => {
         />
         <Card>
           {timelineThreads &&
-            timelineThreads.map((thread: TimelineThread, index: number) => (
+            timelineThreads.map((thread: MockedThread, index: number) => (
               <ThreadPreview
                 key={index}
                 divider={index < timelineThreads.length - 1}
                 thread={thread}
+                onClick={() => openThread(thread)}
               />
             ))}
         </Card>

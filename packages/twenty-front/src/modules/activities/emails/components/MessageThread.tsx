@@ -5,7 +5,7 @@ import { useRecoilState } from 'recoil';
 import { MessageThreadBody } from '@/activities/emails/components/MessageThreadBody';
 import { MessageThreadBodyPreview } from '@/activities/emails/components/MessageThreadBodyPreview';
 import { MessageThreadSender } from '@/activities/emails/components/MessageThreadSender';
-import { EmailUser } from '@/activities/emails/right-drawer/components/RightDrawerThread';
+import { MockedEmailUser } from '@/activities/emails/mocks/mockedThreads';
 import { viewableMessageThreadIdsFamilyState } from '@/activities/emails/state/viewableMessageThreadIdsFamilyState';
 
 const StyledMessageThread = styled.div`
@@ -27,8 +27,8 @@ type MessageThreadProps = {
   id: string;
   body: string;
   sentAt: string;
-  from: EmailUser;
-  to: EmailUser[];
+  from: MockedEmailUser;
+  to: MockedEmailUser[];
 };
 
 export const MessageThread = ({
