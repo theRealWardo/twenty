@@ -13,10 +13,12 @@ describe('CompanyResolver (e2e)', () => {
   const authGuardMock = { canActivate: (): any => true };
 
   beforeEach(async () => {
-    [app] = await createApp({
-      moduleBuilderHook: (moduleBuilder) =>
-        moduleBuilder.overrideGuard(JwtAuthGuard).useValue(authGuardMock),
-    });
+    app = (
+      await createApp({
+        moduleBuilderHook: (moduleBuilder) =>
+          moduleBuilder.overrideGuard(JwtAuthGuard).useValue(authGuardMock),
+      })
+    )[0];
   });
 
   afterEach(async () => {
@@ -26,8 +28,8 @@ describe('CompanyResolver (e2e)', () => {
   it('should create a company', () => {
     const queryData = {
       query: `
-        mutation CreateOneCompany($data: CompanyCreateInput!) {
-          createOneCompany(data: $data) {
+        mutation CreateCompany($data: CompanyCreateInput!) {
+          createCompany(data: $data) {
             id
             name
             domainName
