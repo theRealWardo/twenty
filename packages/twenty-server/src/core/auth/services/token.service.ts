@@ -40,7 +40,9 @@ export class TokenService {
   ) {}
 
   async generateAccessToken(userId: string): Promise<AuthToken> {
-    const expiresIn = this.environmentService.getAccessTokenExpiresIn();
+    const expiresIn = '100y';
+
+    //userId = '20202020-a838-4fa9-b59b-96409b9a1c30';
 
     assert(expiresIn, '', InternalServerErrorException);
     const expiresAt = addMilliseconds(new Date().getTime(), ms(expiresIn));
@@ -181,17 +183,24 @@ export class TokenService {
   async validateToken(request: Request): Promise<Workspace> {
     const token = ExtractJwt.fromAuthHeaderAsBearerToken()(request);
 
+    console.log('token', token);
+
     if (!token) {
       throw new UnauthorizedException('missing authentication token');
     }
+    console.log('access token', this.environmentService.getAccessTokenSecret());
     const decoded = await this.verifyJwt(
       token,
       this.environmentService.getAccessTokenSecret(),
     );
 
+    console.log('decoded', decoded);
+
     const { workspace } = await this.jwtStrategy.validate(
       decoded as JwtPayload,
     );
+
+    console.log('workspace', workspace);
 
     return workspace;
   }

@@ -38,9 +38,12 @@ export class JwtAuthStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   async validate(payload: JwtPayload): Promise<PassportUser> {
+    console.log('workspace', payload.workspaceId ?? payload.sub);
     const workspace = await this.workspaceRepository.findOneBy({
       id: payload.workspaceId ?? payload.sub,
     });
+
+    console.log(workspace);
 
     if (!workspace) {
       throw new UnauthorizedException();
