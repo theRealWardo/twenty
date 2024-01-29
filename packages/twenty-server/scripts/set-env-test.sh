@@ -5,7 +5,7 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Construct the absolute path of .env file in the project root directory
-ENV_PATH="${SCRIPT_DIR}/../.env.test"
+ENV_PATH="${SCRIPT_DIR}/../.env.test:e2e"
 
 # Check if the file exists
 if [ -f "${ENV_PATH}" ]; then

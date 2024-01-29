@@ -4,6 +4,7 @@ import { Test, TestingModule, TestingModuleBuilder } from '@nestjs/testing';
 import mockUser from 'twenty-server/test/mock-data/user.json';
 import mockWorkspace from 'twenty-server/test/mock-data/workspace.json';
 import { RequestHandler } from 'express';
+import { bearer } from 'twenty-server/test/mock-data/bearer';
 
 import { AppModule } from 'src/app.module';
 
@@ -46,6 +47,10 @@ export const createApp = async (
     req.user = {
       user: mockUser,
       workspace: mockWorkspace,
+    };
+    req.headers = {
+      ...req.headers,
+      authorization: bearer,
     };
     next();
   };
