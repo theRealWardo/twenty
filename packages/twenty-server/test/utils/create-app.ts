@@ -1,8 +1,8 @@
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { Test, TestingModule, TestingModuleBuilder } from '@nestjs/testing';
 
-import mockUser from 'test/mock-data/user.json';
-import mockWorkspace from 'test/mock-data/workspace.json';
+import mockUser from 'twenty-server/test/mock-data/user.json';
+import mockWorkspace from 'twenty-server/test/mock-data/workspace.json';
 import { RequestHandler } from 'express';
 
 import { AppModule } from 'src/app.module';

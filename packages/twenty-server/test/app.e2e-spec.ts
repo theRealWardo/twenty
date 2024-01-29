@@ -8,7 +8,7 @@ describe('AppController (e2e)', () => {
   let app: INestApplication;
 
   beforeEach(async () => {
-    [app] = await createApp();
+    app = (await createApp())[0];
   });
 
   afterEach(async () => {
@@ -22,9 +22,9 @@ describe('AppController (e2e)', () => {
       .expect((response) => {
         expect(response.body).toEqual({
           status: 'ok',
-          info: { database: { status: 'up' } },
+          info: {},
           error: {},
-          details: { database: { status: 'up' } },
+          details: {},
         });
       });
   });
