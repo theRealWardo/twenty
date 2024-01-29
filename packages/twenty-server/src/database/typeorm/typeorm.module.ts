@@ -1,32 +1,56 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
-import { typeORMCoreModuleOptions } from 'src/database/typeorm/core/core.datasource';
 import { EnvironmentModule } from 'src/integrations/environment/environment.module';
 
 import { TypeORMService } from './typeorm.service';
 
-import { typeORMMetadataModuleOptions } from './metadata/metadata.datasource';
+const baseConfig: TypeOrmModuleOptions = {
+  type: 'postgres',
+  logging: ['error'],
+  synchronize: false,
+  migrationsRun: false,
+  migrationsTableName: '_typeorm_migrations',
+};
 
-const metadataTypeORMFactory = async (): Promise<TypeOrmModuleOptions> => ({
-  ...typeORMMetadataModuleOptions,
+const metadataTypeORMFactory = async (
+  configService: ConfigService,
+): Promise<TypeOrmModuleOptions> => ({
+  ...baseConfig,
+  url: configService.get<string>('PG_DATABASE_URL'),
+  schema: 'metadata',
+  entities: ['dist/src/metadata/**/*.entity{.ts,.js}'],
+  migrations: ['dist/src/database/typeorm/metadata/migrations/*{.ts,.js}'],
   name: 'metadata',
 });
 
-const coreTypeORMFactory = async (): Promise<TypeOrmModuleOptions> => ({
-  ...typeORMCoreModuleOptions,
+const coreTypeORMFactory = async (
+  configService: ConfigService,
+): Promise<TypeOrmModuleOptions> => ({
+  ...baseConfig,
+  url: configService.get<string>('PG_DATABASE_URL'),
+  schema: 'core',
+  entities: ['dist/src/core/**/*.entity{.ts,.js}'],
+  migrations: ['dist/src/database/typeorm/core/migrations/*{.ts,.js}'],
   name: 'core',
 });
 
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
-      useFactory: metadataTypeORMFactory,
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) =>
+        metadataTypeORMFactory(configService),
       name: 'metadata',
+      inject: [ConfigService],
     }),
     TypeOrmModule.forRootAsync({
-      useFactory: coreTypeORMFactory,
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) =>
+        coreTypeORMFactory(configService),
       name: 'core',
+      inject: [ConfigService],
     }),
     EnvironmentModule,
   ],
