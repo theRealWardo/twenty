@@ -56,6 +56,7 @@ export class GraphQLConfigService
       },
       conditionalSchema: async (context) => {
         try {
+          console.log('db  url', this.environmentService.getPGDatabaseUrl());
           if (!this.tokenService.isTokenPresent(context.req)) {
             return new GraphQLSchema({});
           }

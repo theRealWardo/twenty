@@ -12,6 +12,8 @@ import { IntegrationsModule } from './integrations/integrations.module';
 import { HealthModule } from './health/health.module';
 import { WorkspaceModule } from './workspace/workspace.module';
 
+console.log('process.env', process.env);
+
 @Module({
   imports: [
     ConfigModule.forRoot({
