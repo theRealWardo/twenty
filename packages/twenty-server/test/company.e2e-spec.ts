@@ -13,10 +13,12 @@ describe('CompanyResolver (e2e)', () => {
   const authGuardMock = { canActivate: (): any => true };
 
   beforeEach(async () => {
-    [app] = await createApp({
-      moduleBuilderHook: (moduleBuilder) =>
-        moduleBuilder.overrideGuard(JwtAuthGuard).useValue(authGuardMock),
-    });
+    app = (
+      await createApp({
+        moduleBuilderHook: (moduleBuilder) =>
+          moduleBuilder.overrideGuard(JwtAuthGuard).useValue(authGuardMock),
+      })
+    )[0];
   });
 
   afterEach(async () => {
