@@ -14851,6 +14851,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/base-64@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "@types/base-64@npm:1.0.2"
+  checksum: 3ad69002bd9ca4e79c010f6d9a4c9d09967687153fa6bb98e9459c731219609a4ac76920451565784e9d98cbe3567429eb60bd1561918c3a6ea2436d894346af
+  languageName: node
+  linkType: hard
+
 "@types/bcrypt@npm:^5.0.0":
   version: 5.0.2
   resolution: "@types/bcrypt@npm:5.0.2"
@@ -19377,6 +19384,13 @@ __metadata:
   version: 1.0.2
   resolution: "balanced-match@npm:1.0.2"
   checksum: 9308baf0a7e4838a82bbfd11e01b1cb0f0cf2893bc1676c27c2a8c0e70cbae1c59120c3268517a8ae7fb6376b4639ef81ca22582611dbee4ed28df945134aaee
+  languageName: node
+  linkType: hard
+
+"base-64@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "base-64@npm:1.0.0"
+  checksum: d886cb3236cee0bed9f7075675748b59b32fad623ddb8ce1793c790306aa0f76a03238cad4b3fb398abda6527ce08a5588388533a4ccade0b97e82b9da660e28
   languageName: node
   linkType: hard
 
@@ -25578,6 +25592,13 @@ __metadata:
   version: 5.0.6
   resolution: "fetch-retry@npm:5.0.6"
   checksum: 349f50db631039630e915f70c763469cb696f3ac92ca6f63823109334a2bc62f63670b8c5a5c7e0195c39df517e60ef385cc5264f4c4904d0c6707d371fa8999
+  languageName: node
+  linkType: hard
+
+"figma-squircle@npm:^0.3.1":
+  version: 0.3.1
+  resolution: "figma-squircle@npm:0.3.1"
+  checksum: 16a974d7cc4fa016ec3ed9b46cf5b8d74324ae0e8e9a0396263c225ee594864feed03b2e57f8b5c3377458d4232d62f7a3f86d99a9bdad6c05c3f1b50211a357
   languageName: node
   linkType: hard
 
@@ -41863,6 +41884,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"smooth-corners@npm:^1.0.8":
+  version: 1.0.8
+  resolution: "smooth-corners@npm:1.0.8"
+  checksum: 2181eb9c923fdd0bfd4ac0148fbc658387c94cb791803ee84306249e69bc4ef845e31e388e6ada1d30a88540caa1220e52212609aa8f94cb2b7322a0ebed1805
+  languageName: node
+  linkType: hard
+
 "snake-case@npm:^3.0.4":
   version: 3.0.4
   resolution: "snake-case@npm:3.0.4"
@@ -44246,6 +44274,7 @@ __metadata:
     "@testing-library/jest-dom": "npm:^6.1.5"
     "@testing-library/react": "npm:14.0.0"
     "@types/apollo-upload-client": "npm:^17.0.2"
+    "@types/base-64": "npm:^1.0.2"
     "@types/bcrypt": "npm:^5.0.0"
     "@types/better-sqlite3": "npm:^7.6.8"
     "@types/bytes": "npm:^3.1.1"
@@ -44286,6 +44315,7 @@ __metadata:
     apollo-server-express: "npm:^3.12.0"
     apollo-upload-client: "npm:^17.0.0"
     axios: "npm:^1.6.2"
+    base-64: "npm:^1.0.0"
     bcrypt: "npm:^5.1.1"
     better-sqlite3: "npm:^9.2.2"
     body-parser: "npm:^1.20.2"
@@ -44321,6 +44351,7 @@ __metadata:
     eslint-plugin-simple-import-sort: "npm:^10.0.0"
     eslint-plugin-storybook: "npm:^0.6.15"
     eslint-plugin-unused-imports: "npm:^3.0.0"
+    figma-squircle: "npm:^0.3.1"
     file-type: "npm:16.5.4"
     framer-motion: "npm:^10.12.17"
     googleapis: "npm:105"
@@ -44407,6 +44438,7 @@ __metadata:
     scroll-into-view: "npm:^1.16.2"
     semver: "npm:^7.5.4"
     sharp: "npm:^0.32.1"
+    smooth-corners: "npm:^1.0.8"
     source-map-support: "npm:^0.5.20"
     storybook: "npm:^7.6.3"
     storybook-addon-cookie: "npm:^3.2.0"
