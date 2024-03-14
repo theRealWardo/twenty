@@ -1,16 +1,14 @@
 import { Injectable, Logger } from '@nestjs/common';
 
 import { AxiosResponse } from 'axios';
-import { simpleParser, AddressObject } from 'mailparser';
+import { simpleParser } from 'mailparser';
 import planer from 'planer';
 
-import {
-  GmailMessage,
-  Participant,
-} from 'src/workspace/messaging/types/gmail-message';
+import { GmailMessage } from 'src/workspace/messaging/types/gmail-message';
 import { MessageQuery } from 'src/workspace/messaging/types/message-or-thread-query';
 import { GmailMessageParsedResponse } from 'src/workspace/messaging/types/gmail-message-parsed-response';
 import { FetchByBatchesService } from 'src/workspace/messaging/services/fetch-by-batch.service';
+import { formatAddressObjectAsParticipants } from 'src/workspace/messaging/services/utils/format-address-object-as-participants.util';
 
 @Injectable()
 export class FetchMessagesByBatchesService {
@@ -90,10 +88,10 @@ export class FetchMessagesByBatchesService {
           if (!from) throw new Error('From value is missing');
 
           const participants = [
-            ...this.formatAddressObjectAsParticipants(from, 'from'),
-            ...this.formatAddressObjectAsParticipants(to, 'to'),
-            ...this.formatAddressObjectAsParticipants(cc, 'cc'),
-            ...this.formatAddressObjectAsParticipants(bcc, 'bcc'),
+            ...formatAddressObjectAsParticipants(from, 'from'),
+            ...formatAddressObjectAsParticipants(to, 'to'),
+            ...formatAddressObjectAsParticipants(cc, 'cc'),
+            ...formatAddressObjectAsParticipants(bcc, 'bcc'),
           ];
 
           let textWithoutReplyQuotations = text;
@@ -139,40 +137,6 @@ export class FetchMessagesByBatchesService {
     ) as GmailMessage[];
 
     return { messages: filteredMessages, errors };
-  }
-
-  formatAddressObjectAsArray(
-    addressObject: AddressObject | AddressObject[],
-  ): AddressObject[] {
-    return Array.isArray(addressObject) ? addressObject : [addressObject];
-  }
-
-  formatAddressObjectAsParticipants(
-    addressObject: AddressObject | AddressObject[] | undefined,
-    role: 'from' | 'to' | 'cc' | 'bcc',
-  ): Participant[] {
-    if (!addressObject) return [];
-    const addressObjects = this.formatAddressObjectAsArray(addressObject);
-
-    const participants = addressObjects.map((addressObject) => {
-      const emailAdresses = addressObject.value;
-
-      return emailAdresses.map((emailAddress) => {
-        const { name, address } = emailAddress;
-
-        return {
-          role,
-          handle: address ? this.removeSpacesAndLowerCase(address) : '',
-          displayName: name || '',
-        };
-      });
-    });
-
-    return participants.flat();
-  }
-
-  private removeSpacesAndLowerCase(email: string): string {
-    return email.replace(/\s/g, '').toLowerCase();
   }
 
   async formatBatchResponsesAsGmailMessages(
