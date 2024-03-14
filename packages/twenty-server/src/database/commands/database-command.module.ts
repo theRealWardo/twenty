@@ -6,7 +6,8 @@ import { DataSourceModule } from 'src/metadata/data-source/data-source.module';
 import { TypeORMModule } from 'src/database/typeorm/typeorm.module';
 import { WorkspaceModule } from 'src/core/workspace/workspace.module';
 import { DataSeedWorkspaceCommand } from 'src/database/commands/data-seed-dev-workspace.command';
-import { DataSeedDemoWorkspaceCronCommand } from 'src/database/commands/data-seed-demo-workspace/crons/data-seed-demo-workspace.cron.command';
+import { StartDataSeedDemoWorkspaceCronCommand } from 'src/database/commands/data-seed-demo-workspace/crons/start-data-seed-demo-workspace.cron.command';
+import { StopDataSeedDemoWorkspaceCronCommand } from 'src/database/commands/data-seed-demo-workspace/crons/stop-data-seed-demo-workspace.cron.command';
 import { WorkspaceDataSourceModule } from 'src/workspace/workspace-datasource/workspace-datasource.module';
 import { WorkspaceSyncMetadataModule } from 'src/workspace/workspace-sync-metadata/workspace-sync-metadata.module';
 import { ObjectMetadataModule } from 'src/metadata/object-metadata/object-metadata.module';
@@ -28,9 +29,10 @@ import { DataSeedDemoWorkspaceModule } from 'src/database/commands/data-seed-dem
   providers: [
     DataSeedWorkspaceCommand,
     DataSeedDemoWorkspaceCommand,
-    DataSeedDemoWorkspaceCronCommand,
     WorkspaceAddTotalCountCommand,
     ConfirmationQuestion,
+    StartDataSeedDemoWorkspaceCronCommand,
+    StopDataSeedDemoWorkspaceCronCommand,
   ],
 })
 export class DatabaseCommandModule {}
