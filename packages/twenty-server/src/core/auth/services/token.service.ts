@@ -519,4 +519,8 @@ export class TokenService {
 
     return { success: true };
   }
+
+  async encodePayload(payload: any): Promise<string> {
+    return this.jwtService.sign(payload);
+  }
 }

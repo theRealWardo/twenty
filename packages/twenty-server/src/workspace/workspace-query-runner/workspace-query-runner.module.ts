@@ -5,6 +5,7 @@ import { WorkspaceDataSourceModule } from 'src/workspace/workspace-datasource/wo
 import { WorkspacePreQueryHookModule } from 'src/workspace/workspace-query-runner/workspace-pre-query-hook/workspace-pre-query-hook.module';
 import { workspaceQueryRunnerFactories } from 'src/workspace/workspace-query-runner/factories';
 import { RecordPositionListener } from 'src/workspace/workspace-query-runner/listeners/record-position.listener';
+import { AuthModule } from 'src/core/auth/auth.module';
 
 import { WorkspaceQueryRunnerService } from './workspace-query-runner.service';
 
@@ -13,6 +14,7 @@ import { WorkspaceQueryRunnerService } from './workspace-query-runner.service';
     WorkspaceQueryBuilderModule,
     WorkspaceDataSourceModule,
     WorkspacePreQueryHookModule,
+    AuthModule,
   ],
   providers: [
     WorkspaceQueryRunnerService,

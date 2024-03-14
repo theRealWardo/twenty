@@ -7,6 +7,8 @@ import {
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import isEmpty from 'lodash.isempty';
+import { addMilliseconds } from 'date-fns';
+import ms from 'ms';
 
 import { IConnection } from 'src/utils/pagination/interfaces/connection.interface';
 import {
@@ -45,6 +47,7 @@ import { WorkspacePreQueryHookService } from 'src/workspace/workspace-query-runn
 import { EnvironmentService } from 'src/integrations/environment/environment.service';
 import { NotFoundError } from 'src/filters/utils/graphql-errors.util';
 import { QueryRunnerArgsFactory } from 'src/workspace/workspace-query-runner/factories/query-runner-args.factory';
+import { TokenService } from 'src/core/auth/services/token.service';
 
 import { WorkspaceQueryRunnerOptions } from './interfaces/query-runner-option.interface';
 import {
@@ -66,6 +69,7 @@ export class WorkspaceQueryRunnerService {
     private readonly eventEmitter: EventEmitter2,
     private readonly workspacePreQueryHookService: WorkspacePreQueryHookService,
     private readonly environmentService: EnvironmentService,
+    private readonly tokenService: TokenService,
   ) {}
 
   async findMany<
@@ -101,11 +105,17 @@ export class WorkspaceQueryRunnerService {
       }`,
     );
 
-    return this.parseResult<IConnection<Record>>(
+    // console.log('result', result);
+
+    const returnValue = this.parseResult<IConnection<Record>>(
       result,
       objectMetadataItem,
       '',
     );
+
+    // console.log('returnValue', returnValue);
+
+    return returnValue;
   }
 
   async findOne<
@@ -479,7 +489,55 @@ export class WorkspaceQueryRunnerService {
       throw error;
     }
 
-    return parseResult(result);
+    const computedResult = this.applyGetters(result, objectMetadataItem);
+
+    return parseResult(computedResult);
+  }
+
+  applyGetters<Result>(
+    result: Result,
+    objectMetadataItem: ObjectMetadataInterface,
+  ): Result {
+    switch (objectMetadataItem.nameSingular) {
+      case 'attachment':
+        console.log('getting attachment', result);
+
+        return this.applyAttachmentGetters(result);
+      default:
+        return result;
+    }
+  }
+
+  applyAttachmentGetters<Result>(attachments: any): Result {
+    if (!attachments || !attachments.edges) {
+      return attachments;
+    }
+
+    const mappedEdges = attachments.edges.map((attachment: any) => {
+      if (attachment?.node?.fullPath) {
+        const expirationDate = addMilliseconds(
+          new Date().getTime(),
+          ms('1m'),
+        ).toISOString();
+
+        attachment.node.fullPath = `${
+          attachment.node.fullPath
+        }?expiration_date=${expirationDate}&token=${this.tokenService.encodePayload(
+          {
+            expiration_date: expirationDate,
+          },
+        )}`;
+      }
+
+      return attachment;
+    });
+
+    console.log('applyAttachmentGetters', mappedEdges);
+
+    return {
+      ...attachments,
+      edges: mappedEdges,
+    } as any;
   }
 
   async executeAndParse<Result>(
